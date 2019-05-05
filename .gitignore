@@ -65,28 +65,12 @@ Carthage/Build
 .gradle
 # NDK/CMake
 .externalNativeBuild
+
+# Gradle for Android Plugin (added by connorlu)
 local.properties
-yoga.iml
-.idea/encodings.xml
-.idea/gradle.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/runConfigurations.xml
-.idea/vcs.xml
-.idea/workspace.xml
-.idea/codeStyles/codeStyleConfig.xml
-.idea/codeStyles/Project.xml
-.idea/dictionaries/connorlu_MC2.xml
-android/android.iml
+*.iml
+.idea/*
+android/.idea/*
 android/gradlew.bat
-android/.idea/encodings.xml
-android/.idea/gradle.xml
-android/.idea/misc.xml
-android/.idea/modules.xml
-android/.idea/runConfigurations.xml
-android/.idea/workspace.xml
-android/.idea/codeStyles/codeStyleConfig.xml
-android/.idea/codeStyles/Project.xml
-android/.idea/dictionaries/connorlu_MC2.xml
 android/gradle/wrapper/gradle-wrapper.jar
 android/gradle/wrapper/gradle-wrapper.properties
