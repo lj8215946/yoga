@@ -43,8 +43,8 @@ inline bool isUndefined(float value) {
 
 using namespace facebook;
 
-extern const std::array<YGEdge, 4> trailing;
-extern const std::array<YGEdge, 4> leading;
+extern const std::array<YGEdge, 4> trailing;    //将trailEdge通过YGFlexDirection转化为上下左右，
+extern const std::array<YGEdge, 4> leading;     //将leadEdge通过YGFlexDirection转化为上下左右，
 extern const YGValue YGValueUndefined;
 extern const YGValue YGValueAuto;
 extern const YGValue YGValueZero;
@@ -66,6 +66,7 @@ struct YGCachedMeasurement {
         computedWidth(-1),
         computedHeight(-1) {}
 
+        //如果，两个YGCachedMeasurement的内部属性全部相等就说他们两个相等。
   bool operator==(YGCachedMeasurement measurement) const {
     bool isEqual = widthMeasureMode == measurement.widthMeasureMode &&
         heightMeasureMode == measurement.heightMeasureMode;

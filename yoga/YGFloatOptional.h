@@ -9,7 +9,7 @@
 #include <cmath>
 #include <limits>
 #include "Yoga-internal.h"
-
+//对Float的一个封装，重载了许多操作符
 struct YGFloatOptional {
 private:
   float value_ = std::numeric_limits<float>::quiet_NaN();

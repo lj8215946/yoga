@@ -99,7 +99,7 @@ inline bool YGFlexDirectionIsRow(const YGFlexDirection flexDirection) {
 
 inline YGFloatOptional YGResolveValue(
     const YGValue value,
-    const float ownerSize) {
+    const float ownerSize) {//ownerSize是用来处理百分比的
   switch (value.unit) {
     case YGUnitPoint:
       return YGFloatOptional{value.value};
@@ -113,6 +113,7 @@ inline YGFloatOptional YGResolveValue(
 inline YGFloatOptional YGResolveValue(
     yoga::detail::CompactValue value,
     float ownerSize) {
+  //ownerSize是用来处理百分比的
   return YGResolveValue((YGValue) value, ownerSize);
 }
 
@@ -135,6 +136,7 @@ inline YGFlexDirection YGResolveFlexDirection(
   return flexDirection;
 }
 
+//返回0代表auto
 inline YGFloatOptional YGResolveValueMargin(
     yoga::detail::CompactValue value,
     const float ownerSize) {

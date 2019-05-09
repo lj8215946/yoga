@@ -223,6 +223,7 @@ public:
   YGDisplay display() const { return display_; }
   BITFIELD_REF(display) display() { return {*this}; }
 
+  //这个flex属性其实是flexGrow和FlexShrink的合集属性，还会影响FlexBasis
   YGFloatOptional flex() const { return flex_; }
   Ref<YGFloatOptional, &YGStyle::flex_, flexBit> flex() { return {*this}; }
 

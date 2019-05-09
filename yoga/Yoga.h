@@ -44,11 +44,11 @@ typedef void (*YGDirtiedFunc)(YGNodeRef node);
 typedef void (*YGPrintFunc)(YGNodeRef node);
 typedef void (*YGNodeCleanupFunc)(YGNodeRef node);
 typedef int (*YGLogger)(
-    YGConfigRef config,
-    YGNodeRef node,
-    YGLogLevel level,
-    const char* format,
-    va_list args);
+        YGConfigRef config,
+        YGNodeRef node,
+        YGLogLevel level,
+        const char* format,
+        va_list args);
 typedef YGNodeRef (
     *YGCloneNodeFunc)(YGNodeRef oldNode, YGNodeRef owner, int childIndex);
 

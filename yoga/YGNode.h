@@ -99,7 +99,7 @@ public:
 
   bool hasMeasureFunc() const noexcept { return measure_.noContext != nullptr; }
 
-  YGSize measure(float, YGMeasureMode, float, YGMeasureMode, void*);
+  YGSize z(float, YGMeasureMode, float, YGMeasureMode, void*);
 
   bool hasBaselineFunc() const noexcept {
     return baseline_.noContext != nullptr;
@@ -115,6 +115,7 @@ public:
   const YGStyle& getStyle() const { return style_; }
 
   // For Performance reasons passing as reference.
+    //用于存储Measure之后的信息
   YGLayout& getLayout() { return layout_; }
 
   const YGLayout& getLayout() const { return layout_; }
@@ -165,6 +166,9 @@ public:
   }
 
   // Methods related to positions, margin, padding and border
+    /**
+     * axisSize该轴的视图大小（也就是可是区域最大不会超过这个）
+     */
   YGFloatOptional getLeadingPosition(
       const YGFlexDirection axis,
       const float axisSize) const;

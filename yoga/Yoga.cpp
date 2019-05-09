@@ -107,6 +107,7 @@ bool YGFloatIsUndefined(const float value) {
   return facebook::yoga::isUndefined(value);
 }
 
+//统一处理了"上，下，左，右，Start，End，竖直，水平，全部"的方向匹配逻辑。
 detail::CompactValue YGComputedEdgeValue(
     const YGStyle::Edges& edges,
     YGEdge edge,
@@ -205,7 +206,9 @@ void YGNodeMarkDirtyAndPropogateToDescendants(const YGNodeRef node) {
   return node->markDirtyAndPropogateDownwards();
 }
 
+//用于记录活着的YGNode的数量
 int32_t gNodeInstanceCount = 0;
+
 int32_t gConfigInstanceCount = 0;
 
 WIN_EXPORT YGNodeRef YGNodeNewWithConfig(const YGConfigRef config) {
@@ -413,6 +416,7 @@ void YGNodeRemoveAllChildren(const YGNodeRef owner) {
   if (firstChild->getOwner() == owner) {
     // If the first child has this node as its owner, we assume that this child
     // set is unique.
+      // 删除孩子节点的时候通过第一个还是是否私有判断其余孩子是否私有，这个假设未必成立
     for (uint32_t i = 0; i < childCount; i++) {
       const YGNodeRef oldChild = YGNodeGetChild(owner, i);
       oldChild->setLayout(YGNode().getLayout()); // layout is no longer valid
@@ -892,6 +896,7 @@ YGValue YGNodeStyleGetMaxHeight(const YGNodeConstRef node) {
     return node->getLayout().instanceName;                     \
   }
 
+  //返回某个方向上的属性值。
 #define YG_NODE_LAYOUT_RESOLVED_PROPERTY_IMPL(type, name, instanceName) \
   type YGNodeLayoutGet##name(const YGNodeRef node, const YGEdge edge) { \
     YGAssertWithNode(                                                   \
@@ -966,6 +971,7 @@ void YGNodePrint(const YGNodeRef node, const YGPrintOptions options) {
 }
 #endif
 
+//将leading/trailing转化为上下左右
 const std::array<YGEdge, 4> leading = {
     {YGEdgeTop, YGEdgeBottom, YGEdgeLeft, YGEdgeRight}};
 
@@ -981,6 +987,7 @@ static const std::array<YGEdge, 4> pos = {{
 static const std::array<YGDimension, 4> dim = {
     {YGDimensionHeight, YGDimensionHeight, YGDimensionWidth, YGDimensionWidth}};
 
+//返回某个方向项目的Border和Padding的和
 static inline float YGNodePaddingAndBorderForAxis(
     const YGNodeConstRef node,
     const YGFlexDirection axis,
@@ -990,6 +997,7 @@ static inline float YGNodePaddingAndBorderForAxis(
       .unwrap();
 }
 
+//处理孩子的alignSelf和父亲alignItems的优先级，并处理了竖方向下
 static inline YGAlign YGNodeAlignItem(const YGNode* node, const YGNode* child) {
   const YGAlign align = child->getStyle().alignSelf() == YGAlignAuto
       ? node->getStyle().alignItems()

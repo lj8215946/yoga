@@ -48,6 +48,7 @@ void YGNode::print(void* printContext) {
   }
 }
 
+
 YGFloatOptional YGNode::getLeadingPosition(
     const YGFlexDirection axis,
     const float axisSize) const {
@@ -55,6 +56,7 @@ YGFloatOptional YGNode::getLeadingPosition(
     auto leadingPosition = YGComputedEdgeValue(
         style_.position(), YGEdgeStart, CompactValue::ofUndefined());
     if (!leadingPosition.isUndefined()) {
+      //axisSize该轴的视图大小（也就是可是区域最大不会超过这个）,axisSize是用来处理百分比的，也就是说这时候axisSize已经是确定的值了
       return YGResolveValue(leadingPosition, axisSize);
     }
   }
@@ -111,13 +113,14 @@ YGFloatOptional YGNode::getLeadingMargin(
     const float widthSize) const {
   if (YGFlexDirectionIsRow(axis) &&
       !style_.margin()[YGEdgeStart].isUndefined()) {
-    return YGResolveValueMargin(style_.margin()[YGEdgeStart], widthSize);
+    //widthSize该轴的视图大小（也就是可是区域最大不会超过这个）,widthSize是用来处理百分比的，也就是说这时候widthSize已经是确定的值了
+    return YGResolveValueMargin(style_.margin()[YGEdgeStart], widthSize); //返回0代表auto
   }
 
   return YGResolveValueMargin(
       YGComputedEdgeValue(
           style_.margin(), leading[axis], CompactValue::ofZero()),
-      widthSize);
+      widthSize); //返回0代表auto
 }
 
 YGFloatOptional YGNode::getTrailingMargin(
@@ -159,7 +162,7 @@ float YGNode::baseline(float width, float height, void* layoutContext) {
 }
 
 // Setters
-
+// private
 void YGNode::setMeasureFunc(decltype(YGNode::measure_) measureFunc) {
   if (measureFunc.noContext == nullptr) {
     // TODO: t18095186 Move nodeType to opt-in function and mark appropriate
@@ -275,8 +278,8 @@ void YGNode::setLayoutDimension(float dimension, int index) {
   layout_.dimensions[index] = dimension;
 }
 
-// If both left and right are defined, then use left. Otherwise return +left or
-// -right depending on which is defined.
+// If both leading and trailing are defined, then use leading. Otherwise return +leading or
+// -trailing depending on which is defined.
 YGFloatOptional YGNode::relativePosition(
     const YGFlexDirection axis,
     const float axisSize) const {
@@ -300,8 +303,12 @@ void YGNode::setPosition(
    * values. */
   const YGDirection directionRespectingRoot =
       owner_ != nullptr ? direction : YGDirectionLTR;
+
+  //YGDirection只会对横向布局的YGFlexDirection有影响，其实就是RTL的时候将横行情况下的YGFlexDirection反转
   const YGFlexDirection mainAxis =
       YGResolveFlexDirection(style_.flexDirection(), directionRespectingRoot);
+  //交叉轴的方向一定是从Leading->Tailing的。
+  //比如：主轴方向是 YGFlexDirectionRow或YGFlexDirectionRowReverse的时候交叉轴方向都是YGFlexDirectionColumn
   const YGFlexDirection crossAxis =
       YGFlexDirectionCross(mainAxis, directionRespectingRoot);
 
@@ -310,6 +317,7 @@ void YGNode::setPosition(
   const YGFloatOptional relativePositionCross =
       relativePosition(crossAxis, crossSize);
 
+  //使用position属性和margin属性生成最终的layoutPosition属性
   setLayoutPosition(
       (getLeadingMargin(mainAxis, ownerWidth) + relativePositionMain).unwrap(),
       leading[mainAxis]);
@@ -354,6 +362,9 @@ YGValue YGNode::resolveFlexBasisPtr() const {
   return YGValueAuto;
 }
 
+//style中那几套Dimensions存储的就是宽高相关的属性
+//这里的逻辑是，当最大宽高==最小宽高的时候resolvedDimensions_也就那么是这个值
+//否则，resolvedDimensions_是宽高值（就是用户设置的width，height）
 void YGNode::resolveDimension() {
   using namespace yoga;
   const YGStyle& style = getStyle();
@@ -432,7 +443,7 @@ float YGNode::resolveFlexShrink() const {
   return config_->useWebDefaults ? kWebDefaultFlexShrink : kDefaultFlexShrink;
 }
 
-bool YGNode::isNodeFlexible() {
+bool YGNode::isNodeFlexible() { //意思是这个node是不是可以跟随父亲变大变小
   return (
       (style_.positionType() == YGPositionTypeRelative) &&
       (resolveFlexGrow() != 0 || resolveFlexShrink() != 0));
